@@ -1,20 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:tokokita/helpers/user_info.dart';
 import 'package:tokokita/ui/login_page.dart';
 import 'package:tokokita/ui/produk_page.dart';
-import 'package:tokokita/ui/registrasi_page.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Widget page = const Scaffold(
+    body: Center(child: CircularProgressIndicator()),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  void checkLoginStatus() async {
+    var token = await UserInfo().getToken();
+    setState(() {
+      if (token != null) {
+        page = const ProdukPage();
+      } else {
+        page = const LoginPage();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Toko Kita Fauzia',
+    return MaterialApp(
+      title: 'Toko Kita',
       debugShowCheckedModeBanner: false,
-      home: ProdukPage(),
+      home: page,
     );
   }
 }
